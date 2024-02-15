@@ -1,5 +1,6 @@
 package mate.academy.bookstore.repository;
 
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.BookSearchParameters;
 import mate.academy.bookstore.model.Book;
@@ -18,39 +19,53 @@ public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
     @Override
     public Specification<Book> build(BookSearchParameters searchParams) {
         Specification<Book> bookSpecification = Specification.where(null);
+        bookSpecification = addAuthorsSpecification(searchParams, bookSpecification);
+        bookSpecification = addTitlesSpecification(searchParams, bookSpecification);
+        bookSpecification = addIsbnsSpecification(searchParams, bookSpecification);
+        bookSpecification = addPriceSpecification(searchParams, bookSpecification);
+        return bookSpecification;
+    }
 
-        if (searchParams.authors() != null && searchParams.authors().length > 0) {
-            bookSpecification = bookSpecification.and(
-                    bookSpecificationProviderManager.getSpecificationProvider(AUTHOR_KEY)
-                            .getSpecification(searchParams.authors()));
+    private Specification<Book> addSpecification(BookSearchParameters searchParams,
+                                                 Specification<Book> bookSpecification,
+                                                 String key,
+                                                 Function<BookSearchParameters, String[]> accessor
+    ) {
+        if (accessor.apply(searchParams) != null && accessor.apply(searchParams).length > 0) {
+            return bookSpecification.and(
+                    bookSpecificationProviderManager.getSpecificationProvider(key)
+                            .getSpecification(accessor.apply(searchParams)));
         }
+        return bookSpecification;
+    }
 
-        if (searchParams.titles() != null && searchParams.titles().length > 0) {
-            bookSpecification = bookSpecification.and(
-                    bookSpecificationProviderManager.getSpecificationProvider(TITLE_KEY)
-                            .getSpecification(searchParams.titles()));
-        }
+    private Specification<Book> addAuthorsSpecification(BookSearchParameters searchParams,
+                                                        Specification<Book> bookSpecification) {
+        return addSpecification(searchParams, bookSpecification,
+                AUTHOR_KEY, BookSearchParameters::authors);
+    }
 
-        if (searchParams.isbns() != null && searchParams.isbns().length > 0) {
-            bookSpecification = bookSpecification.and(
-                    bookSpecificationProviderManager.getSpecificationProvider(ISBN_KEY)
-                            .getSpecification(searchParams.isbns()));
-        }
+    private Specification<Book> addTitlesSpecification(BookSearchParameters searchParams,
+                                                       Specification<Book> bookSpecification) {
+        return addSpecification(searchParams, bookSpecification,
+                TITLE_KEY, BookSearchParameters::titles);
+    }
 
-        if (searchParams.priceFrom() != null && searchParams.priceTo() != null) {
-            bookSpecification = bookSpecification.and((root, query, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        criteriaBuilder.greaterThanOrEqualTo(
-                                root.get(PRICE_KEY), searchParams.priceFrom()),
-                        criteriaBuilder.lessThanOrEqualTo(
-                                root.get(PRICE_KEY), searchParams.priceTo())
-                ));
-        } else if (searchParams.priceFrom() != null) {
-            bookSpecification = bookSpecification.and((root, query, criteriaBuilder) ->
+    private Specification<Book> addIsbnsSpecification(BookSearchParameters searchParams,
+                                                      Specification<Book> bookSpecification) {
+        return addSpecification(searchParams, bookSpecification,
+                ISBN_KEY, BookSearchParameters::isbns);
+    }
+
+    private Specification<Book> addPriceSpecification(BookSearchParameters searchParams,
+                                                      Specification<Book> bookSpecification) {
+
+        if (searchParams.priceFrom() != null) {
+            return bookSpecification.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.greaterThanOrEqualTo(root.get(PRICE_KEY),
                             searchParams.priceFrom()));
         } else if (searchParams.priceTo() != null) {
-            bookSpecification = bookSpecification.and((root, query, criteriaBuilder) ->
+            return bookSpecification.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.lessThanOrEqualTo(root.get(PRICE_KEY),
                             searchParams.priceTo()));
         }
