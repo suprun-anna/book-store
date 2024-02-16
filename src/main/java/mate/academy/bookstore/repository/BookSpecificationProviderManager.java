@@ -15,7 +15,7 @@ public class BookSpecificationProviderManager implements SpecificationProviderMa
     public SpecificationProvider<Book> getSpecificationProvider(String key) {
         System.out.println(bookSpecificationProviders);
         return bookSpecificationProviders.stream()
-                .filter(p -> p.getKey().equals(key))
+                .filter(provider -> provider.getKey().equals(key))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Can't find correct "
                         + "specification for key " + key));
