@@ -1,4 +1,4 @@
-package mate.academy.bookstore.repository;
+package mate.academy.bookstore.repository.book;
 
 import java.util.List;
 import java.util.NoSuchElementException;
