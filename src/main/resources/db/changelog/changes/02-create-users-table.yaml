@@ -41,7 +41,8 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: is_deleted
-                  type: BIT
+                  type: BOOLEAN
+                  defaultValue: false
                   constraints:
                     nullable: false
       rollback:

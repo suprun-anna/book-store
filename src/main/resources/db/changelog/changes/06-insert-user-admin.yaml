@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users-admin
+      author: suprun
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  { name: email, value: "admin@example.com" }
+                #1234567890
+              - column:
+                  { name: password, value: "$2a$10$pgIWyO86Wu8MkPWRlSwWVeKa283CeLZjCQUco5k7avrLi6xGpu3je" }
+              - column:
+                  { name: first_name, value: "admin" }
+              - column:
+                  { name: last_name, value: "admin" }
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  { name: email, value: "annasuprun@example.com" }
+              - column:
+                  #qwertyui
+                  { name: password, value: "$2a$10$32JwccK8QEvU16dQLIy4V.p1vaJKBEPurh/hAsl8CeFcGwwDRVQ5K" }
+              - column:
+                  { name: first_name, value: "Anna" }
+              - column:
+                  { name: last_name, value: "Suprun" }
