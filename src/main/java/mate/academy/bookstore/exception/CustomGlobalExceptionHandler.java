@@ -19,6 +19,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final String CONSTRAINT_MARKER = "constraint";
+    private static final String DUPLICATE_ENTRY_MESSAGE = "Duplicate entry";
+    private static final String ERRORS = "errors";
+    private static final String MESSAGE = "message";
+    private static final String STATUS = "status";
+    private static final String TABLE_FIELD_SEPARATOR = ".";
+    private static final String TIMESTAMP = "timestamp";
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
@@ -27,32 +35,34 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             WebRequest request
     ) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST);
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(STATUS, HttpStatus.BAD_REQUEST);
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
                 .toList();
-        body.put("errors", errors);
+        body.put(ERRORS, errors);
         return new ResponseEntity<>(body, headers, status);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+    public ResponseEntity<Object> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex) {
         String errorMessage = ex.getMessage();
-        if (errorMessage.contains("Duplicate entry")) {
+        if (errorMessage.contains(DUPLICATE_ENTRY_MESSAGE)) {
             errorMessage = "Field '" + extractFieldNameFromErrorMessage(errorMessage)
                     + "' must be unique.";
         }
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.CONFLICT);
-        body.put("error", "Data Integrity Violation");
-        body.put("message", errorMessage);
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(STATUS, HttpStatus.CONFLICT);
+        body.put(ERRORS, "Data Integrity Violation");
+        body.put(MESSAGE, errorMessage);
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 
     private String extractFieldNameFromErrorMessage(String errorMessage) {
-        int startIndex = errorMessage.indexOf(".", errorMessage.indexOf("constraint")) + 1;
+        int startIndex = errorMessage.indexOf(TABLE_FIELD_SEPARATOR,
+                errorMessage.indexOf(CONSTRAINT_MARKER)) + 1;
         int endIndex = errorMessage.length() - 1;
         return errorMessage.substring(startIndex, endIndex);
     }
