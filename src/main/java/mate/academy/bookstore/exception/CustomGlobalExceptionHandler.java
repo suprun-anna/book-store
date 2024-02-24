@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -32,6 +34,27 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .toList();
         body.put("errors", errors);
         return new ResponseEntity<>(body, headers, status);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String errorMessage = ex.getMessage();
+        if (errorMessage.contains("Duplicate entry")) {
+            errorMessage = "Field '" + extractFieldNameFromErrorMessage(errorMessage)
+                    + "' must be unique.";
+        }
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT);
+        body.put("error", "Data Integrity Violation");
+        body.put("message", errorMessage);
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    private String extractFieldNameFromErrorMessage(String errorMessage) {
+        int startIndex = errorMessage.indexOf(".", errorMessage.indexOf("constraint")) + 1;
+        int endIndex = errorMessage.length() - 1;
+        return errorMessage.substring(startIndex, endIndex);
     }
 
     private String getErrorMessage(ObjectError e) {
