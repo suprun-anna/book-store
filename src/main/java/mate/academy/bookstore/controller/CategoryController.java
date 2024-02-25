@@ -50,7 +50,6 @@ public class CategoryController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("{id}/books")
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable Long id) {
-        System.out.println(bookService.findAllByCategoryId(id));
         return bookService.findAllByCategoryId(id);
     }
 
