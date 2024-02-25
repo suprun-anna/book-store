@@ -1,4 +1,4 @@
-package mate.academy.bookstore.service;
+package mate.academy.bookstore.service.impl;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -13,6 +13,7 @@ import mate.academy.bookstore.model.RoleName;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.role.RoleRepository;
 import mate.academy.bookstore.repository.user.UserRepository;
+import mate.academy.bookstore.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +28,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto userDto) {
-        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(userDto.email()).isPresent()) {
             throw new RegistrationException("Can't register user with email "
-                    + userDto.getEmail());
+                    + userDto.email());
         }
         User user = userMapper.toModel(userDto);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDto.password()));
         Set<Role> userRoles = new HashSet<>();
         Role userRole = roleRepository.findByName(DEFAULT_ROLE_NAME)
                 .orElseThrow(() -> new RegistrationException("Default user role not found"));
