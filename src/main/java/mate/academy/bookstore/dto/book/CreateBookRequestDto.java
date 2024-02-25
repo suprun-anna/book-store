@@ -4,19 +4,20 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import lombok.Data;
+import java.util.Set;
 
-@Data
-public class CreateBookRequestDto {
-    @NotBlank
-    private String title;
-    @NotBlank
-    private String author;
-    @NotBlank
-    private String isbn;
-    @NotNull
-    @Min(0)
-    private BigDecimal price;
-    private String description;
-    private String coverImage;
+public record CreateBookRequestDto(
+        @NotBlank
+        String title,
+        @NotBlank
+        String author,
+        @NotBlank
+        String isbn,
+        @NotNull
+        @Min(0)
+        BigDecimal price,
+        String description,
+        String coverImage,
+        Set<Long> categoryIds
+) {
 }
