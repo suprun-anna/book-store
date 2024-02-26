@@ -32,8 +32,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto save(CreateBookRequestDto bookDto) {
         Book book = bookMapper.toEntity(bookDto);
-        Set<Category> categories = getCategoriesByIds(bookDto.categoryIds());
-        book.setCategories(categories);
+        if (bookDto.categoryIds() != null) {
+            Set<Category> categories = getCategoriesByIds(bookDto.categoryIds());
+            book.setCategories(categories);
+        }
         return bookMapper.toDto(bookRepository.save(book));
     }
 
@@ -69,21 +71,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto updateBookById(Long id, CreateBookRequestDto bookDto) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
-        if (optionalBook.isPresent()) {
-            Book book = optionalBook.get();
-            book.setTitle(bookDto.title());
-            book.setAuthor(bookDto.author());
-            book.setIsbn(bookDto.isbn());
-            book.setPrice(bookDto.price());
-            book.setDescription(bookDto.description());
-            book.setCoverImage(bookDto.coverImage());
+        bookRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Can't update book by id=" + id));
+        Book book = bookMapper.toEntity(bookDto);
+        book.setId(id);
+        if (bookDto.categoryIds() != null) {
             Set<Category> categories = getCategoriesByIds(bookDto.categoryIds());
             book.setCategories(categories);
-            return bookMapper.toDto(bookRepository.save(book));
-        } else {
-            throw new EntityNotFoundException("Can't update book by id=" + id);
         }
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override

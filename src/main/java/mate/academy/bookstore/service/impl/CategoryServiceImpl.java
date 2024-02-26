@@ -2,7 +2,6 @@ package mate.academy.bookstore.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.category.CategoryDto;
 import mate.academy.bookstore.mapper.CategoryMapper;
@@ -49,15 +48,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(Long id, CategoryDto categoryDto) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if (optionalCategory.isPresent()) {
-            Category category = optionalCategory.get();
-            category.setName(categoryDto.getName());
-            category.setDescription(categoryDto.getDescription());
-            return categoryMapper.toDto(categoryRepository.save(category));
-        } else {
-            throw new EntityNotFoundException("Can't update category by id=" + id);
-        }
+        categoryRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Can't update category by id=" + id));
+        Category category = categoryMapper.toEntity(categoryDto);
+        category.setId(id);
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override

@@ -41,14 +41,14 @@ public class CategoryController {
     @Operation(summary = "Get category by id",
             description = "Get category by id")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public CategoryDto getCategoryById(@PathVariable Long id) {
         return categoryService.getById(id);
     }
 
     @Operation(summary = "Get books by category", description = "Get books by category")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("{id}/books")
+    @GetMapping("/{id}/books")
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable Long id) {
         return bookService.findAllByCategoryId(id);
     }
@@ -63,7 +63,7 @@ public class CategoryController {
 
     @Operation(summary = "Update category by ID", description = "Update category by ID")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public CategoryDto updateCategory(@PathVariable Long id,
                                       @RequestBody CategoryDto categoryDto) {
@@ -72,7 +72,7 @@ public class CategoryController {
 
     @Operation(summary = "Delete category by ID", description = "Delete category by ID")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(Long id) {
         categoryService.deleteById(id);
