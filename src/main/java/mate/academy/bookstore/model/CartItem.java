@@ -34,4 +34,6 @@ public class CartItem {
     @Min(1)
     @Column(nullable = false)
     private int quantity;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

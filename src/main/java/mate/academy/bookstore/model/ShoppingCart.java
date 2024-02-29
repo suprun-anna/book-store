@@ -32,4 +32,6 @@ public class ShoppingCart {
     @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.LAZY)
     @Column(nullable = false)
     private Set<CartItem> cartItems;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }
