@@ -24,4 +24,3 @@ public interface CartItemMapper {
     @Mapping(target = "book", ignore = true)
     void updateFromDto(UpdateCartItemRequestDto requestDto, @MappingTarget CartItem itemFromDb);
 }
-

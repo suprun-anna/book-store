@@ -36,16 +36,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartDto addBooksToCartByUserId(Long userId, AddItemToCartRequestDto requestDto) {
-        ShoppingCart cartFromDB = getCartFromDB(userId);
+        ShoppingCart cartFromDb = getCartFromDb(userId);
         CartItem requestedItem = cartItemMapper.toModel(requestDto);
-        requestedItem.setShoppingCart(cartFromDB);
+        requestedItem.setShoppingCart(cartFromDb);
         cartItemRepository.save(requestedItem);
-        return cartMapper.toDto(getCartFromDB(userId));
+        return cartMapper.toDto(getCartFromDb(userId));
     }
 
     @Override
     public ShoppingCartDto getCartByUserId(Long id) {
-        return cartMapper.toDto(getCartFromDB(id));
+        return cartMapper.toDto(getCartFromDb(id));
     }
 
     @Override
@@ -54,13 +54,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CartItem itemFromDb = getItemFromDb(cartItemId);
         cartItemMapper.updateFromDto(requestDto, itemFromDb);
         cartItemRepository.save(itemFromDb);
-        return cartMapper.toDto(getCartFromDB(userId));
+        return cartMapper.toDto(getCartFromDb(userId));
     }
 
     @Override
     public ShoppingCartDto delete(Long userId, Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
-        return cartMapper.toDto(getCartFromDB(userId));
+        return cartMapper.toDto(getCartFromDb(userId));
     }
 
     private CartItem getItemFromDb(Long id) {
@@ -68,7 +68,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .orElseThrow(() -> new EntityNotFoundException("Can't find item by id=" + id));
     }
 
-    private ShoppingCart getCartFromDB(Long userId) {
+    private ShoppingCart getCartFromDb(Long userId) {
         return shoppingCartRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     ShoppingCart shoppingCart = new ShoppingCart();

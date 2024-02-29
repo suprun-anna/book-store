@@ -54,4 +54,3 @@ databaseChangeLog:
       rollback:
         - dropTable:
             tableName: books
-
