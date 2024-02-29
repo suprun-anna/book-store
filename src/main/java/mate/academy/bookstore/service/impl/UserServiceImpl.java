@@ -13,6 +13,7 @@ import mate.academy.bookstore.model.RoleName;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.role.RoleRepository;
 import mate.academy.bookstore.repository.user.UserRepository;
+import mate.academy.bookstore.service.ShoppingCartService;
 import mate.academy.bookstore.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private static final RoleName DEFAULT_ROLE_NAME = RoleName.ROLE_USER;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RegistrationException("Default user role not found"));
         userRoles.add(userRole);
         user.setRoles(userRoles);
+        shoppingCartService.createShoppingCart(user);
         return userMapper.toDto(userRepository.save(user));
     }
 
