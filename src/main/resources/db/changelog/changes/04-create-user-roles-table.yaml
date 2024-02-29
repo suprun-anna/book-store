@@ -10,12 +10,14 @@ databaseChangeLog:
                   name: user_id
                   type: BIGINT
                   constraints:
-                    primaryKey: true
+                    foreignKeyName: fk_user_roles_user_id
+                    references: users(id)
               - column:
-                  name: role_id
-                  type: BIGINT
-                  constraints:
-                    primaryKey: true
+                    name: role_id
+                    type: BIGINT
+                    constraints:
+                      foreignKeyName: fk_user_roles_role_id
+                      references: roles(id)
       rollback:
         - dropTable:
             tableName: user_roles

@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-categories
+      author: suprun
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  { name: name, value: "Fantasy" }
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  { name: name, value: "Detectives" }
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  { name: name, value: "Fantastic" }

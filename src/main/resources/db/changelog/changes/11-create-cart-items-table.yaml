@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-users-table
+      id: create-cart-items-table
       author: suprun
       changes:
         - createTable:
-            tableName: users
+            tableName: cart_items
             columns:
               - column:
                   name: id
@@ -14,31 +14,25 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: email
-                  type: VARCHAR(255)
-                  constraints:
-                    unique: true
-                    nullable: false
-              - column:
-                  name: password
-                  type: VARCHAR(255)
+                  name: shopping_cart_id
+                  type: BIGINT
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_cart_items_shopping_cart_id
+                    references: shopping_carts(id)
               - column:
-                  name: first_name
-                  type: VARCHAR(255)
+                  name: book_id
+                  type: BIGINT
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_cart_items_book_id
+                    references: books(id)
               - column:
-                  name: last_name
-                  type: VARCHAR(255)
+                  name: quantity
+                  type: INTEGER
                   constraints:
                     nullable: false
-              - column:
-                  name: shipping_address
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: true
+                    default: 0
               - column:
                   name: is_deleted
                   type: BOOLEAN
@@ -47,4 +41,4 @@ databaseChangeLog:
                     nullable: false
       rollback:
         - dropTable:
-            tableName: users
+            tableName: cart_items

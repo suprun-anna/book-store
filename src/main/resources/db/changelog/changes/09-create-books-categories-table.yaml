@@ -10,12 +10,14 @@ databaseChangeLog:
                   name: book_id
                   type: BIGINT
                   constraints:
-                    primaryKey: true
+                    foreignKeyName: fk_books_categories_book_id
+                    references: books(id)
               - column:
                   name: category_id
                   type: BIGINT
                   constraints:
-                    primaryKey: true
+                    foreignKeyName: fk_books_categories_category_id
+                    references: roles(id)
       rollback:
         - dropTable:
             tableName: user_roles

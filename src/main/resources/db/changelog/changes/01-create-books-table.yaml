@@ -47,11 +47,10 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   type: BOOLEAN
+                  defaultValue: false
                   constraints:
-                    defaultValue: false
                     nullable: false
 
       rollback:
         - dropTable:
             tableName: books
-

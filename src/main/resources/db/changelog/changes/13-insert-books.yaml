@@ -1,0 +1,89 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-books
+      author: suprun
+      changes:
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Game of Thrones"
+              - column:
+                  name: author
+                  value: "George R. R. Martin"
+              - column:
+                  name: isbn
+                  value: "9780553573404"
+              - column:
+                  name: price
+                  value: "19.99"
+              - column:
+                  name: description
+                  value: "The saga of Westeros, power, and betrayal"
+              - column:
+                  name: cover_image
+                  value: "game_of_thrones_cover.jpg"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "The Lord of the Rings"
+              - column:
+                  name: author
+                  value: "J. R. R. Tolkien"
+              - column:
+                  name: isbn
+                  value: "9780544003415"
+              - column:
+                  name: price
+                  value: "24.99"
+              - column:
+                  name: description
+                  value: "The epic saga of Middle-earth and the One Ring"
+              - column:
+                  name: cover_image
+                  value: "lord_of_the_rings_cover.jpg"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Harry Potter and the Philosopher's Stone"
+              - column:
+                  name: author
+                  value: "J. K. Rowling"
+              - column:
+                  name: isbn
+                  value: "9781408855652"
+              - column:
+                  name: price
+                  value: "14.99"
+              - column:
+                  name: description
+                  value: "The first book about the young wizard Harry Potter"
+              - column:
+                  name: cover_image
+                  value: "harry_potter_and_the_philosophers_stone_cover.jpg"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Sherlock Holmes"
+              - column:
+                  name: author
+                  value: "Arthur Conan Doyle"
+              - column:
+                  name: isbn
+                  value: "9780140437684"
+              - column:
+                  name: price
+                  value: "9.99"
+              - column:
+                  name: description
+                  value: "Classic detective stories featuring Sherlock Holmes"
+              - column:
+                  name: cover_image
+                  value: "sherlock_holmes_cover.jpg"
