@@ -32,9 +32,8 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     ShoppingCartDto getCart(Authentication authentication) {
-
         User user = (User) authentication.getPrincipal();
-        return shoppingCartService.getCartByUserId(user.getId());
+        return shoppingCartService.getCartDtoByUserId(user.getId());
     }
 
     @Operation(summary = "Add books to the shopping cart",

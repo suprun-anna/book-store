@@ -44,7 +44,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartDto getCartByUserId(Long id) {
+    public ShoppingCart getCartByUserId(Long id) {
+        return getCartFromDb(id);
+    }
+
+    @Override
+    public ShoppingCartDto getCartDtoByUserId(Long id) {
         return cartMapper.toDto(getCartFromDb(id));
     }
 
@@ -61,6 +66,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto delete(Long userId, Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
         return cartMapper.toDto(getCartFromDb(userId));
+    }
+
+    @Override
+    public void clearShoppingCart(Long cartId) {
+        cartItemRepository.deleteByShoppingCartId(cartId);
     }
 
     private CartItem getItemFromDb(Long id) {
