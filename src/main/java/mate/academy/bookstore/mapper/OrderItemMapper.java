@@ -9,15 +9,12 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
 @Mapper(config = MapperConfig.class)
 public interface OrderItemMapper {
-    @Mappings({
-            @Mapping(target = "bookId", source = "book.id"),
-            @Mapping(target = "quantity", source = "quantity")
-    })
+    @Mapping(target = "bookId", source = "book.id")
+    @Mapping(target = "quantity", source = "quantity")
     @Named("orderItemsToDto")
     OrderItemDto toDto(OrderItem orderItem);
 

@@ -35,3 +35,4 @@ databaseChangeLog:
       file: /db/changelog/changes/17-insert-shopping-cart.yaml
   - include:
       file: /db/changelog/changes/18-insert-cart-items.yaml
+      
