@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         if (cartFromDb.getCartItems().size() == 0) {
             throw new IllegalStateException("Cannot proceed with an empty shopping cart.");
         }
-        Order order = createOrderWithoutOrderItems(userId, requestDto);
+        Order order = createOrderWithoutItems(userId, requestDto);
         order = orderRepository.save(order);
         Set<OrderItem> orderItems = createOrderItemsSet(cartFromDb, order);
         order.setOrderItems(orderItems);
@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
                         "Can't find order by userId=" + userId + " and orderId=" + orderId));
     }
 
-    private Order createOrderWithoutOrderItems(Long userId, CreateOrderRequestDto requestDto) {
+    private Order createOrderWithoutItems(Long userId, CreateOrderRequestDto requestDto) {
         Order order = new Order();
         order.setUser(userService.getById(userId));
         order.setStatus(Status.PENDING);
