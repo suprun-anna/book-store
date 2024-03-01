@@ -43,32 +43,13 @@ public class OrderServiceImpl implements OrderService {
         if (cartFromDb.getCartItems().size() == 0) {
             throw new IllegalStateException("Cannot proceed with an empty shopping cart.");
         }
-
-        Order order = new Order();
-        order.setUser(userService.getById(userId));
-        order.setStatus(Status.PENDING);
-        order.setOrderDate(LocalDateTime.now());
-        order.setShippingAddress(requestDto.shippingAddress());
-        order.setTotal(BigDecimal.ZERO);
-
-        final Order orderFromDb = orderRepository.save(order);
-
-        Set<OrderItem> orderItems = cartFromDb.getCartItems().stream()
-                .map(cartItem -> {
-                    OrderItem orderItem = orderItemMapper.toOrderItemModel(cartItem);
-                    orderItem.setOrder(orderFromDb);
-                    return orderItem;
-                })
-                .peek(orderItemRepository::save)
-                .collect(Collectors.toSet());
-
-        order = orderFromDb;
+        Order order = createOrderWithoutOrderItems(userId, requestDto);
+        order = orderRepository.save(order);
+        Set<OrderItem> orderItems = createOrderItemsSet(cartFromDb, order);
         order.setOrderItems(orderItems);
-
         order.setTotal(order.getOrderItems().stream()
                 .map(OrderItem::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
-
         shoppingCartService.clearShoppingCart(cartFromDb.getId());
         orderRepository.save(order);
         return orderMapper.toDto(order);
@@ -116,5 +97,26 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByIdAndUserId(orderId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find order by userId=" + userId + " and orderId=" + orderId));
+    }
+
+    private Order createOrderWithoutOrderItems(Long userId, CreateOrderRequestDto requestDto) {
+        Order order = new Order();
+        order.setUser(userService.getById(userId));
+        order.setStatus(Status.PENDING);
+        order.setOrderDate(LocalDateTime.now());
+        order.setShippingAddress(requestDto.shippingAddress());
+        order.setTotal(BigDecimal.ZERO);
+        return order;
+    }
+
+    private Set<OrderItem> createOrderItemsSet(ShoppingCart shoppingCart, Order order) {
+        return shoppingCart.getCartItems().stream()
+                .map(cartItem -> {
+                    OrderItem orderItem = orderItemMapper.toOrderItemModel(cartItem);
+                    orderItem.setOrder(order);
+                    return orderItem;
+                })
+                .peek(orderItemRepository::save)
+                .collect(Collectors.toSet());
     }
 }
