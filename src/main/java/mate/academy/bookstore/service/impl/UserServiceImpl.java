@@ -1,5 +1,6 @@
 package mate.academy.bookstore.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -49,6 +50,13 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         return user.map(userMapper::toDto).orElseThrow(
-                () -> new RuntimeException("Can't find user by email " + email));
+                () -> new EntityNotFoundException("Can't find user by email " + email));
+    }
+
+    @Override
+    public User getById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElseThrow(
+                () -> new EntityNotFoundException("Can't find user by id= " + id));
     }
 }
