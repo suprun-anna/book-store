@@ -42,8 +42,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RegistrationException("Default user role not found"));
         userRoles.add(userRole);
         user.setRoles(userRoles);
+        user = userRepository.save(user);
         shoppingCartService.createShoppingCart(user);
-        return userMapper.toDto(userRepository.save(user));
+        return userMapper.toDto(user);
     }
 
     @Override
